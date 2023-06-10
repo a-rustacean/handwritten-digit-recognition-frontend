@@ -1,0 +1,17 @@
+{
+  "name": "handwritten-digit-recognition-frontend",
+  "collaborators": [
+    "Dilshad <dilshadplayingminecraft@outlook.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "handwritten_digit_recognition_frontend_bg.wasm",
+    "handwritten_digit_recognition_frontend.js",
+    "handwritten_digit_recognition_frontend.d.ts"
+  ],
+  "module": "handwritten_digit_recognition_frontend.js",
+  "types": "handwritten_digit_recognition_frontend.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

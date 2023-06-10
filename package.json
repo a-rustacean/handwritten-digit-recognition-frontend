@@ -1,0 +1,29 @@
+{
+  "name": "handwritten-digit-recognition",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier . --write",
+    "build": "postcss css/tailwind.css -o css/index.css",
+    "build:watch": "postcss css/tailwind.css -o css/index.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a-rustacean/handwritten-digit-recognition.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a-rustacean/handwritten-digit-recognition/issues"
+  },
+  "homepage": "https://github.com/a-rustacean/handwritten-digit-recognition#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "postcss-cli": "^10.1.0",
+    "prettier": "^2.8.8",
+    "tailwindcss": "^3.3.2"
+  }
+}
