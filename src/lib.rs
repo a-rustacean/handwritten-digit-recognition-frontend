@@ -1,7 +1,8 @@
 extern crate ndarray;
+extern crate console_error_panic_hook;
 use ndarray::{Array1, Array2, ShapeError};
 use serde::{Deserialize, Serialize};
-use std::error::Error;
+use std::{error::Error, panic};
 use wasm_bindgen::prelude::*;
 
 fn sigmoid(x: f32) -> f32 {
@@ -13,11 +14,10 @@ enum Layer {
     DenseLayer {
         weights: Array2<f32>,
         biases: Array1<f32>,
-        num_inputs: usize,
-        num_outputs: usize,
     },
     Sigmoid,
-    Softmax
+    Softmax,
+    Tanh,
 }
 
 impl Layer {
@@ -31,28 +31,8 @@ impl Layer {
                 let tmp = inputs.mapv(f32::exp);
                 let sum = tmp.sum();
                 tmp / sum
-            }
-        }
-    }
-}
-
-impl From<Layer> for LayerData {
-    fn from(layer: Layer) -> LayerData {
-        match layer {
-            Layer::Sigmoid => LayerData::Sigmoid,
-            Layer::DenseLayer {
-                weights,
-                biases,
-                num_inputs,
-                num_outputs,
-                ..
-            } => LayerData::DenseLayer {
-                weights: weights.into_raw_vec(),
-                biases: biases.to_vec(),
-                num_inputs,
-                num_outputs,
             },
-            Layer::Softmax => LayerData::Softmax
+            Self::Tanh => inputs.mapv(|x| x.tanh())
         }
     }
 }
@@ -61,6 +41,7 @@ impl From<Layer> for LayerData {
 enum LayerData {
     Sigmoid,
     Softmax,
+    Tanh,
     DenseLayer {
         weights: Vec<f32>,
         biases: Vec<f32>,
@@ -75,6 +56,7 @@ impl TryFrom<LayerData> for Layer {
         let layer = match value {
             LayerData::Sigmoid => Layer::Sigmoid,
             LayerData::Softmax => Layer::Softmax,
+            LayerData::Tanh => Layer::Tanh,
             LayerData::DenseLayer {
                 weights,
                 biases,
@@ -83,8 +65,6 @@ impl TryFrom<LayerData> for Layer {
             } => Layer::DenseLayer {
                 weights: Array2::from_shape_vec((num_outputs, num_inputs), weights)?,
                 biases: Array1::from_vec(biases),
-                num_inputs,
-                num_outputs,
             },
         };
         Ok(layer)
@@ -100,7 +80,6 @@ struct NeuralNetworkData {
 #[derive(Debug, Clone)]
 struct NeuralNetwork {
     layers: Vec<Layer>,
-    accuracy: f32,
 }
 
 impl NeuralNetwork {
@@ -119,15 +98,6 @@ impl NeuralNetwork {
     }
 }
 
-impl From<&NeuralNetwork> for NeuralNetworkData {
-    fn from(value: &NeuralNetwork) -> Self {
-        NeuralNetworkData {
-            layers: value.layers.clone().into_iter().map(|x| x.into()).collect(),
-            accuracy: value.accuracy,
-        }
-    }
-}
-
 impl TryFrom<NeuralNetworkData> for NeuralNetwork {
     type Error = ShapeError;
     fn try_from(value: NeuralNetworkData) -> Result<Self, Self::Error> {
@@ -135,19 +105,14 @@ impl TryFrom<NeuralNetworkData> for NeuralNetwork {
             value.layers.into_iter().map(|x| x.try_into()).collect();
         Ok(NeuralNetwork {
             layers: layers?,
-            accuracy: value.accuracy,
         })
     }
 }
 
 #[wasm_bindgen]
-pub fn predict(image: Vec<f32>) -> u8 {
+pub fn predict(image: Vec<f32>) -> Vec<f32> {
+    panic::set_hook(Box::new(console_error_panic_hook::hook));
+    
     let neural_netwrok = NeuralNetwork::load().unwrap();
-    neural_netwrok
-        .forward(Array1::from_vec(image))
-        .iter()
-        .enumerate()
-        .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
-        .map(|(i, _)| i)
-        .unwrap() as u8
+    neural_netwrok.forward(Array1::from_vec(image)).to_vec()
 }

@@ -1,4 +1,4 @@
-import init, { predict as _predict } from "../pkg/handwritten_digit_recognition.js";
+import init, { predict as _predict } from "../pkg/handwritten_digit_recognition_frontend.js";
 
 /** @type {HTMLCanvasElement} */
 const canvas = document.getElementById("canvas");
@@ -150,7 +150,13 @@ function predict() {
   for (let i = 0; i < imageData.data.length; i += 4) {
     data.push(imageData.data[i]);
   }
-  predictionOutput.textContent = `Prediction: ${_predict(data)}`;
+  /** @type {number[]} */
+  const prediction = _predict(data);
+  console.log(prediction);
+  const max = Math.max.apply(null, prediction);
+  const predictedNumber = prediction.indexOf(max);
+  const sum = prediction.reduce((acc, curr) => acc + curr, 0);
+  predictionOutput.innerHTML = `Prediction: ${predictedNumber}<br>Confidence: ${(100 * prediction[predictedNumber] / sum).toFixed(2)}%`;
 }
 
 function visualize() {

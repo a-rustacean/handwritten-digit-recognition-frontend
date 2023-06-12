@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Handwritten digit recognition</title>
   <link rel="stylesheet" href="css/index.css">
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init({tools:['console']});</script>
 </head>
 
 <body>
@@ -22,7 +24,7 @@
       </div>
       <button id="clear" class="bg-gray-600 px-6 py-3 rounded text-white">Clear</button>
     </div>
-    <p id="prediction" class="mb-10 bg-indigo-500 px-6 py-3 rounded text-white">Prediction: ...</p>
+      <p id="prediction" class="mb-10 bg-indigo-500 px-6 py-3 rounded text-white">Prediction: ...<br>Confidence: ...</p>
   </div>
   <script type="module" src="src/main.js"></script>
 </body>
