@@ -1,31 +1,5 @@
-# meent starter
+# handwritten digit recognition frontend
 
-## About
+A handwritten digit recognition machine learning model made in rust and webassembly
 
-A starter project for MEENT (mongodb, express, ejs, nodejs, tailwind css).
-
-## Commands
-
-start development server:
-
-```console
-$ npm run dev
-```
-
-run server in production:
-
-```console
-$ npm start
-```
-
-build css:
-
-```console
-$ npm run build
-```
-
-build css on file change:
-
-```console
-$ npm run build:watch
-```
+live demo: https://a-rustacean.github.io/handwritten-digit-recognition-frontend/

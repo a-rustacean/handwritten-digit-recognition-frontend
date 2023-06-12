@@ -126,7 +126,7 @@ function predict() {
   newCtx.strokeStyle = "#fff";
   newCtx.lineCap = "round";
   newCtx.lineJoin = "round";
-  newCtx.lineWidth = remapSize * lineWidth / canvas.width;
+  newCtx.lineWidth = 2 * remapSize * lineWidth / canvas.width;
   for (const stroke of strokes) {
     newCtx.beginPath();
     newCtx.moveTo(mapRange(stroke[0][0], minX - paddingX - additionalPadding, maxX + paddingX + additionalPadding, 0, remapSize), mapRange(stroke[0][1], minY - paddingY - additionalPadding, maxY + paddingY + additionalPadding, 0, remapSize));
